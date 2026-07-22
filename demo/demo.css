@@ -187,6 +187,26 @@ input[type="range"] {
   line-height: 1.65;
 }
 
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 36px;
+  color: #596174;
+  font-size: 0.94rem;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer a {
+  color: #8a4b08;
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
+
 @media (max-width: 880px) {
   .playground {
     grid-template-columns: 1fr;
@@ -209,5 +229,10 @@ input[type="range"] {
 
   .direction-grid {
     grid-template-columns: 1fr;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
