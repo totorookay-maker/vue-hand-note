@@ -135,3 +135,7 @@ Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## License
 
 [MIT](LICENSE) © 2026 totorookay-maker
+
+## Acknowledgements
+
+The compact arrow proportions are inspired by [neat-annotations](https://github.com/syabro/neat-annotations), an MIT-licensed CSS annotation library by syabro.
