@@ -4,19 +4,13 @@ A lightweight handwritten annotation component for Vue 3.
 
 Wrap any text or HTML element, set the note and its direction, and Vue Hand Note renders a handwritten label, a curved arrow, and a subtle highlight automatically.
 
-一个适用于 Vue 3 的轻量手写标注组件。通过组件标签包裹目标内容，并设置标注文字和方向，即可自动生成手写说明、弯曲箭头和背景高亮。
-
-## Open-source support / 开源支持
+## Open-source support
 
 Vue Hand Note is an open-source project supported by [LearningMap.today](https://learningmap.today/). This support helps keep the component documented, tested, and freely available to the Vue community.
 
-Vue Hand Note 是由 [LearningMap.today](https://learningmap.today/) 支持的开源项目，致力于为 Vue 社区持续提供文档完善、经过测试且可自由使用的手写标注组件。
-
-## Live demo / 在线演示
+## Live demo
 
 [Open the interactive GitHub Pages demo →](https://totorookay-maker.github.io/vue-hand-note/)
-
-[打开 GitHub Pages 在线交互演示 →](https://totorookay-maker.github.io/vue-hand-note/)
 
 ## Features
 
@@ -44,11 +38,11 @@ npm install vue-hand-note
 ```vue
 <template>
   <p>
-    创建任务时需要提供一个
-    <HandNote note="稳定 ID" direction="top" color="blue">
+    Every task receives a
+    <HandNote note="Stable ID" direction="top" color="blue">
       CLI-042
     </HandNote>
-    作为唯一标识。
+    identifier.
   </p>
 </template>
 
@@ -102,7 +96,7 @@ nw  n  ne  w  e  sw  s  se
 
 ```vue
 <HandNote
-  note="自定义标注"
+  note="Custom note"
   direction="right"
   color="#e1499a"
   :gap="10"
@@ -110,7 +104,7 @@ nw  n  ne  w  e  sw  s  se
   :label-offset-x="5"
   :label-offset-y="-3"
 >
-  目标内容
+  Target content
 </HandNote>
 ```
 
