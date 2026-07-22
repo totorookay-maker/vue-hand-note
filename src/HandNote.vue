@@ -65,7 +65,7 @@ const normalizedDirection = computed(() => directionAliases[props.direction])
 const resolvedColor = computed(() => presetColors[props.color] ?? props.color)
 
 const arrowTransform = computed(
-  () => `rotate(${arrowAngles[normalizedDirection.value]} 88 48)`,
+  () => `rotate(${arrowAngles[normalizedDirection.value]} 43 19)`,
 )
 
 const rootStyle = computed(() => ({
@@ -89,23 +89,18 @@ const rootStyle = computed(() => ({
 
     <svg
       class="vhn__arrow"
-      viewBox="0 0 96 96"
+      viewBox="0 0 46 38"
       aria-hidden="true"
       focusable="false"
     >
       <g :transform="arrowTransform">
         <path
-          class="vhn__arrow-ghost"
-          d="M 12 38 C 31 19 48 63 69 48 C 77 42 82 45 88 48"
-          transform="translate(0.7 0.6)"
-        />
-        <path
           class="vhn__arrow-curve"
-          d="M 12 38 C 31 19 48 63 69 48 C 77 42 82 45 88 48"
+          d="M 4 19 C 15 18 31 18 43 19"
         />
         <path
           class="vhn__arrow-head"
-          d="M 81 39.5 L 88 48 L 77 47.5"
+          d="M 36 13 L 43 19 L 36 25"
         />
       </g>
     </svg>
