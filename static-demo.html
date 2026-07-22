@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vue Hand Note · Standalone Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 72px 24px;
+        color: #172033;
+        background: #f4f0e8;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+      main { width: min(960px, 100%); margin: 0 auto; }
+      h1 { margin: 0 0 12px; font-size: clamp(3rem, 8vw, 6rem); letter-spacing: -0.06em; }
+      .intro { max-width: 680px; margin: 0 0 72px; color: #596174; font-size: 1.16rem; line-height: 1.7; }
+      .demo {
+        display: grid;
+        min-height: 430px;
+        place-items: center;
+        border: 1px solid rgb(23 32 51 / 12%);
+        border-radius: 28px;
+        padding: 100px 48px;
+        background: rgb(255 255 255 / 82%);
+        box-shadow: 0 24px 70px rgb(65 50 29 / 12%);
+      }
+      .line { margin: 0; font: 1.05rem/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 72px; }
+      .cell {
+        display: grid;
+        min-height: 190px;
+        place-items: center;
+        border: 1px solid rgb(23 32 51 / 10%);
+        border-radius: 18px;
+        background: rgb(255 255 255 / 72%);
+      }
+      @media (max-width: 760px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } .line { font-size: 0.78rem; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Vue Hand Note</h1>
+      <p class="intro">无需构建即可打开的静态演示。下面的自定义标签会自动生成手写文字、高亮和弯曲箭头。</p>
+
+      <section class="demo">
+        <p class="line">
+          - [ ]
+          <hand-note note="stable ID" direction="top" color="blue">CLI-042</hand-note>
+          Add export command
+          <hand-note note="priority" direction="top-right" color="red">!high</hand-note>
+        </p>
+      </section>
+
+      <section class="grid" aria-label="All directions">
+        <div class="cell"><hand-note note="左上" direction="top-left" color="amber">top-left</hand-note></div>
+        <div class="cell"><hand-note note="上" direction="top" color="blue">top</hand-note></div>
+        <div class="cell"><hand-note note="右上" direction="top-right" color="green">top-right</hand-note></div>
+        <div class="cell"><hand-note note="左" direction="left" color="red">left</hand-note></div>
+        <div class="cell"><hand-note note="右" direction="right" color="purple">right</hand-note></div>
+        <div class="cell"><hand-note note="左下" direction="bottom-left" color="blue">bottom-left</hand-note></div>
+        <div class="cell"><hand-note note="下" direction="bottom" color="green">bottom</hand-note></div>
+        <div class="cell"><hand-note note="右下" direction="bottom-right" color="amber">bottom-right</hand-note></div>
+      </section>
+    </main>
+
+    <script>
+      const aliases = { n: 'top', ne: 'top-right', e: 'right', se: 'bottom-right', s: 'bottom', sw: 'bottom-left', w: 'left', nw: 'top-left' }
+      const colors = { amber: '#d97706', blue: '#2563eb', green: '#15803d', red: '#dc2626', purple: '#7c3aed' }
+      const vectors = {
+        'top-left': [-0.707, -0.707], top: [0, -1], 'top-right': [0.707, -0.707],
+        left: [-1, 0], right: [1, 0],
+        'bottom-left': [-0.707, 0.707], bottom: [0, 1], 'bottom-right': [0.707, 0.707]
+      }
+
+      const geometry = (direction) => {
+        const [x, y] = vectors[direction]
+        const perpendicular = [-y, x]
+        const start = [x * 64, y * 64]
+        const end = [x * 18, y * 18]
+        const c1 = [x * 50 + perpendicular[0] * 13, y * 50 + perpendicular[1] * 13]
+        const c2 = [x * 31 - perpendicular[0] * 9, y * 31 - perpendicular[1] * 9]
+        const bx = c2[0] - end[0]
+        const by = c2[1] - end[1]
+        const length = Math.hypot(bx, by) || 1
+        const back = [bx / length, by / length]
+        const hp = [-back[1], back[0]]
+        const h1 = [end[0] + back[0] * 9 + hp[0] * 4.5, end[1] + back[1] * 9 + hp[1] * 4.5]
+        const h2 = [end[0] + back[0] * 9 - hp[0] * 4.5, end[1] + back[1] * 9 - hp[1] * 4.5]
+        const r = (value) => Math.round(value * 10) / 10
+        return {
+          curve: `M ${r(start[0])} ${r(start[1])} C ${r(c1[0])} ${r(c1[1])}, ${r(c2[0])} ${r(c2[1])}, ${r(end[0])} ${r(end[1])}`,
+          head: `M ${r(h1[0])} ${r(h1[1])} L ${r(end[0])} ${r(end[1])} L ${r(h2[0])} ${r(h2[1])}`,
+        }
+      }
+
+      class HandNoteElement extends HTMLElement {
+        connectedCallback() {
+          const rawDirection = this.getAttribute('direction') || 'top'
+          const direction = aliases[rawDirection] || rawDirection
+          const colorName = this.getAttribute('color') || 'blue'
+          const color = colors[colorName] || colorName
+          const note = this.getAttribute('note') || ''
+          const arrow = geometry(direction)
+          const content = this.innerHTML
+          this.attachShadow({ mode: 'open' }).innerHTML = `
+            <style>
+              :host { --c: ${color}; --gap: 8px; position: relative; display: inline-flex; vertical-align: baseline; isolation: isolate; }
+              .target { position: relative; z-index: 1; display: inline-flex; border-radius: .2em; background: color-mix(in srgb, var(--c) 13%, transparent); box-shadow: 0 0 0 .18em color-mix(in srgb, var(--c) 10%, transparent); }
+              svg { position: absolute; z-index: 2; left: 50%; top: 50%; width: 160px; height: 160px; overflow: visible; color: var(--c); pointer-events: none; transform: translate(-50%, -50%); }
+              path { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+              .curve { stroke-dasharray: 2 1.2; }
+              .label { position: absolute; z-index: 3; color: var(--c); white-space: nowrap; font: 600 .82em/1.1 "Shantell Sans", "Comic Sans MS", cursive; transform: rotate(-3deg); pointer-events: none; }
+              :host([direction="top"]) .label, :host([direction="n"]) .label { left: 50%; bottom: calc(100% + var(--gap) + 40px); transform: translateX(-50%) rotate(-3deg); }
+              :host([direction="bottom"]) .label, :host([direction="s"]) .label { left: 50%; top: calc(100% + var(--gap) + 40px); transform: translateX(-50%) rotate(-3deg); }
+              :host([direction="left"]) .label, :host([direction="w"]) .label { right: calc(100% + var(--gap) + 48px); top: 50%; transform: translateY(-50%) rotate(-3deg); }
+              :host([direction="right"]) .label, :host([direction="e"]) .label { left: calc(100% + var(--gap) + 48px); top: 50%; transform: translateY(-50%) rotate(-3deg); }
+              :host([direction="top-left"]) .label, :host([direction="nw"]) .label { right: calc(100% + var(--gap) + 28px); bottom: calc(100% + var(--gap) + 26px); }
+              :host([direction="top-right"]) .label, :host([direction="ne"]) .label { left: calc(100% + var(--gap) + 28px); bottom: calc(100% + var(--gap) + 26px); }
+              :host([direction="bottom-left"]) .label, :host([direction="sw"]) .label { right: calc(100% + var(--gap) + 28px); top: calc(100% + var(--gap) + 26px); }
+              :host([direction="bottom-right"]) .label, :host([direction="se"]) .label { left: calc(100% + var(--gap) + 28px); top: calc(100% + var(--gap) + 26px); }
+            </style>
+            <span class="target">${content}</span>
+            <svg viewBox="-80 -80 160 160" aria-hidden="true"><path class="curve" d="${arrow.curve}"></path><path d="${arrow.head}"></path></svg>
+            <span class="label">${note}</span>`
+        }
+      }
+
+      customElements.define('hand-note', HandNoteElement)
+    </script>
+  </body>
+</html>
