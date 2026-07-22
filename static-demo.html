@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -50,7 +50,7 @@
   <body>
     <main>
       <h1>Vue Hand Note</h1>
-      <p class="intro">无需构建即可打开的静态演示。下面的自定义标签会自动生成手写文字、高亮和弯曲箭头。</p>
+      <p class="intro">A standalone demo with no build step. Each custom element renders a handwritten note, a subtle highlight, and a precisely anchored arrow.</p>
 
       <section class="demo">
         <p class="line">
@@ -62,45 +62,23 @@
       </section>
 
       <section class="grid" aria-label="All directions">
-        <div class="cell"><hand-note note="左上" direction="top-left" color="amber">top-left</hand-note></div>
-        <div class="cell"><hand-note note="上" direction="top" color="blue">top</hand-note></div>
-        <div class="cell"><hand-note note="右上" direction="top-right" color="green">top-right</hand-note></div>
-        <div class="cell"><hand-note note="左" direction="left" color="red">left</hand-note></div>
-        <div class="cell"><hand-note note="右" direction="right" color="purple">right</hand-note></div>
-        <div class="cell"><hand-note note="左下" direction="bottom-left" color="blue">bottom-left</hand-note></div>
-        <div class="cell"><hand-note note="下" direction="bottom" color="green">bottom</hand-note></div>
-        <div class="cell"><hand-note note="右下" direction="bottom-right" color="amber">bottom-right</hand-note></div>
+        <div class="cell"><hand-note note="Top left" direction="top-left" color="amber">target</hand-note></div>
+        <div class="cell"><hand-note note="Top" direction="top" color="blue">target</hand-note></div>
+        <div class="cell"><hand-note note="Top right" direction="top-right" color="green">target</hand-note></div>
+        <div class="cell"><hand-note note="Left" direction="left" color="red">target</hand-note></div>
+        <div class="cell"><hand-note note="Right" direction="right" color="purple">target</hand-note></div>
+        <div class="cell"><hand-note note="Bottom left" direction="bottom-left" color="blue">target</hand-note></div>
+        <div class="cell"><hand-note note="Bottom" direction="bottom" color="green">target</hand-note></div>
+        <div class="cell"><hand-note note="Bottom right" direction="bottom-right" color="amber">target</hand-note></div>
       </section>
     </main>
 
     <script>
       const aliases = { n: 'top', ne: 'top-right', e: 'right', se: 'bottom-right', s: 'bottom', sw: 'bottom-left', w: 'left', nw: 'top-left' }
       const colors = { amber: '#d97706', blue: '#2563eb', green: '#15803d', red: '#dc2626', purple: '#7c3aed' }
-      const vectors = {
-        'top-left': [-0.707, -0.707], top: [0, -1], 'top-right': [0.707, -0.707],
-        left: [-1, 0], right: [1, 0],
-        'bottom-left': [-0.707, 0.707], bottom: [0, 1], 'bottom-right': [0.707, 0.707]
-      }
-
-      const geometry = (direction) => {
-        const [x, y] = vectors[direction]
-        const perpendicular = [-y, x]
-        const start = [x * 64, y * 64]
-        const end = [x * 18, y * 18]
-        const c1 = [x * 50 + perpendicular[0] * 13, y * 50 + perpendicular[1] * 13]
-        const c2 = [x * 31 - perpendicular[0] * 9, y * 31 - perpendicular[1] * 9]
-        const bx = c2[0] - end[0]
-        const by = c2[1] - end[1]
-        const length = Math.hypot(bx, by) || 1
-        const back = [bx / length, by / length]
-        const hp = [-back[1], back[0]]
-        const h1 = [end[0] + back[0] * 9 + hp[0] * 4.5, end[1] + back[1] * 9 + hp[1] * 4.5]
-        const h2 = [end[0] + back[0] * 9 - hp[0] * 4.5, end[1] + back[1] * 9 - hp[1] * 4.5]
-        const r = (value) => Math.round(value * 10) / 10
-        return {
-          curve: `M ${r(start[0])} ${r(start[1])} C ${r(c1[0])} ${r(c1[1])}, ${r(c2[0])} ${r(c2[1])}, ${r(end[0])} ${r(end[1])}`,
-          head: `M ${r(h1[0])} ${r(h1[1])} L ${r(end[0])} ${r(end[1])} L ${r(h2[0])} ${r(h2[1])}`,
-        }
+      const angles = {
+        left: 0, 'top-left': 45, top: 90, 'top-right': 135,
+        right: 180, 'bottom-right': 225, bottom: 270, 'bottom-left': 315
       }
 
       class HandNoteElement extends HTMLElement {
@@ -110,27 +88,35 @@
           const colorName = this.getAttribute('color') || 'blue'
           const color = colors[colorName] || colorName
           const note = this.getAttribute('note') || ''
-          const arrow = geometry(direction)
+          const angle = angles[direction]
           const content = this.innerHTML
           this.attachShadow({ mode: 'open' }).innerHTML = `
             <style>
               :host { --c: ${color}; --gap: 8px; position: relative; display: inline-flex; vertical-align: baseline; isolation: isolate; }
-              .target { position: relative; z-index: 1; display: inline-flex; border-radius: .2em; background: color-mix(in srgb, var(--c) 13%, transparent); box-shadow: 0 0 0 .18em color-mix(in srgb, var(--c) 10%, transparent); }
-              svg { position: absolute; z-index: 2; left: 50%; top: 50%; width: 160px; height: 160px; overflow: visible; color: var(--c); pointer-events: none; transform: translate(-50%, -50%); }
-              path { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-              .curve { stroke-dasharray: 2 1.2; }
-              .label { position: absolute; z-index: 3; color: var(--c); white-space: nowrap; font: 600 .82em/1.1 "Shantell Sans", "Comic Sans MS", cursive; transform: rotate(-3deg); pointer-events: none; }
-              :host([direction="top"]) .label, :host([direction="n"]) .label { left: 50%; bottom: calc(100% + var(--gap) + 40px); transform: translateX(-50%) rotate(-3deg); }
-              :host([direction="bottom"]) .label, :host([direction="s"]) .label { left: 50%; top: calc(100% + var(--gap) + 40px); transform: translateX(-50%) rotate(-3deg); }
-              :host([direction="left"]) .label, :host([direction="w"]) .label { right: calc(100% + var(--gap) + 48px); top: 50%; transform: translateY(-50%) rotate(-3deg); }
-              :host([direction="right"]) .label, :host([direction="e"]) .label { left: calc(100% + var(--gap) + 48px); top: 50%; transform: translateY(-50%) rotate(-3deg); }
-              :host([direction="top-left"]) .label, :host([direction="nw"]) .label { right: calc(100% + var(--gap) + 28px); bottom: calc(100% + var(--gap) + 26px); }
-              :host([direction="top-right"]) .label, :host([direction="ne"]) .label { left: calc(100% + var(--gap) + 28px); bottom: calc(100% + var(--gap) + 26px); }
-              :host([direction="bottom-left"]) .label, :host([direction="sw"]) .label { right: calc(100% + var(--gap) + 28px); top: calc(100% + var(--gap) + 26px); }
-              :host([direction="bottom-right"]) .label, :host([direction="se"]) .label { left: calc(100% + var(--gap) + 28px); top: calc(100% + var(--gap) + 26px); }
+              .target { position: relative; z-index: 1; display: inline-flex; border-radius: .2em; background: color-mix(in srgb, var(--c) 9%, transparent); box-shadow: 0 0 0 .13em color-mix(in srgb, var(--c) 8%, transparent); }
+              svg { position: absolute; z-index: 2; width: 96px; height: 96px; overflow: visible; color: var(--c); pointer-events: none; transform: translate(-88px, -48px); }
+              path { fill: none; stroke: currentColor; stroke-width: 2.15; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+              .ghost { opacity: .22; stroke-width: 1.35; }
+              .label { position: absolute; z-index: 3; color: var(--c); white-space: nowrap; font: 560 .86em/1.1 "Shantell Sans", "Comic Sans MS", cursive; transform: rotate(-3deg); pointer-events: none; }
+              :host([direction="left"]) svg, :host([direction="w"]) svg { left: calc(0% - var(--gap)); top: 50%; }
+              :host([direction="right"]) svg, :host([direction="e"]) svg { left: calc(100% + var(--gap)); top: 50%; }
+              :host([direction="top"]) svg, :host([direction="n"]) svg { left: 50%; top: calc(0% - var(--gap)); }
+              :host([direction="bottom"]) svg, :host([direction="s"]) svg { left: 50%; top: calc(100% + var(--gap)); }
+              :host([direction="top-left"]) svg, :host([direction="nw"]) svg { left: calc(0% - var(--gap)); top: calc(0% - var(--gap)); }
+              :host([direction="top-right"]) svg, :host([direction="ne"]) svg { left: calc(100% + var(--gap)); top: calc(0% - var(--gap)); }
+              :host([direction="bottom-left"]) svg, :host([direction="sw"]) svg { left: calc(0% - var(--gap)); top: calc(100% + var(--gap)); }
+              :host([direction="bottom-right"]) svg, :host([direction="se"]) svg { left: calc(100% + var(--gap)); top: calc(100% + var(--gap)); }
+              :host([direction="top"]) .label, :host([direction="n"]) .label { left: 50%; bottom: calc(100% + var(--gap) + 72px); transform: translateX(-50%) rotate(-3deg); }
+              :host([direction="bottom"]) .label, :host([direction="s"]) .label { left: 50%; top: calc(100% + var(--gap) + 72px); transform: translateX(-50%) rotate(-3deg); }
+              :host([direction="left"]) .label, :host([direction="w"]) .label { right: calc(100% + var(--gap) + 72px); top: 50%; transform: translateY(-50%) rotate(-3deg); }
+              :host([direction="right"]) .label, :host([direction="e"]) .label { left: calc(100% + var(--gap) + 72px); top: 50%; transform: translateY(-50%) rotate(-3deg); }
+              :host([direction="top-left"]) .label, :host([direction="nw"]) .label { right: calc(100% + var(--gap) + 51px); bottom: calc(100% + var(--gap) + 51px); }
+              :host([direction="top-right"]) .label, :host([direction="ne"]) .label { left: calc(100% + var(--gap) + 51px); bottom: calc(100% + var(--gap) + 51px); }
+              :host([direction="bottom-left"]) .label, :host([direction="sw"]) .label { right: calc(100% + var(--gap) + 51px); top: calc(100% + var(--gap) + 51px); }
+              :host([direction="bottom-right"]) .label, :host([direction="se"]) .label { left: calc(100% + var(--gap) + 51px); top: calc(100% + var(--gap) + 51px); }
             </style>
             <span class="target">${content}</span>
-            <svg viewBox="-80 -80 160 160" aria-hidden="true"><path class="curve" d="${arrow.curve}"></path><path d="${arrow.head}"></path></svg>
+            <svg viewBox="0 0 96 96" aria-hidden="true"><g transform="rotate(${angle} 88 48)"><path class="ghost" transform="translate(.7 .6)" d="M 12 38 C 31 19 48 63 69 48 C 77 42 82 45 88 48"></path><path d="M 12 38 C 31 19 48 63 69 48 C 77 42 82 45 88 48"></path><path d="M 81 39.5 L 88 48 L 77 47.5"></path></g></svg>
             <span class="label">${note}</span>`
         }
       }
