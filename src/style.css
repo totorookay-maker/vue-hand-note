@@ -30,28 +30,23 @@
 .vhn__arrow {
   position: absolute;
   z-index: 2;
-  width: 96px;
-  height: 96px;
+  width: 46px;
+  height: 38px;
   overflow: visible;
   color: var(--vhn-color);
   pointer-events: none;
-  transform: translate(-88px, -48px);
+  opacity: 0.9;
+  transform: translate(-43px, -19px);
 }
 
-.vhn__arrow-ghost,
 .vhn__arrow-curve,
 .vhn__arrow-head {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.15;
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-}
-
-.vhn__arrow-ghost {
-  opacity: 0.22;
-  stroke-width: 1.35;
 }
 
 .vhn__label-position {
@@ -117,46 +112,46 @@
 
 .vhn--top .vhn__label-position {
   left: 50%;
-  bottom: calc(100% + var(--vhn-gap) + 72px);
+  bottom: calc(100% + var(--vhn-gap) + 44px);
   transform: translateX(-50%);
 }
 
 .vhn--bottom .vhn__label-position {
   left: 50%;
-  top: calc(100% + var(--vhn-gap) + 72px);
+  top: calc(100% + var(--vhn-gap) + 44px);
   transform: translateX(-50%);
 }
 
 .vhn--left .vhn__label-position {
-  right: calc(100% + var(--vhn-gap) + 72px);
+  right: calc(100% + var(--vhn-gap) + 44px);
   top: 50%;
   transform: translateY(-50%);
 }
 
 .vhn--right .vhn__label-position {
-  left: calc(100% + var(--vhn-gap) + 72px);
+  left: calc(100% + var(--vhn-gap) + 44px);
   top: 50%;
   transform: translateY(-50%);
 }
 
 .vhn--top-left .vhn__label-position {
-  right: calc(100% + var(--vhn-gap) + 51px);
-  bottom: calc(100% + var(--vhn-gap) + 51px);
+  right: calc(100% + var(--vhn-gap) + 33px);
+  bottom: calc(100% + var(--vhn-gap) + 33px);
 }
 
 .vhn--top-right .vhn__label-position {
-  left: calc(100% + var(--vhn-gap) + 51px);
-  bottom: calc(100% + var(--vhn-gap) + 51px);
+  left: calc(100% + var(--vhn-gap) + 33px);
+  bottom: calc(100% + var(--vhn-gap) + 33px);
 }
 
 .vhn--bottom-left .vhn__label-position {
-  right: calc(100% + var(--vhn-gap) + 51px);
-  top: calc(100% + var(--vhn-gap) + 51px);
+  right: calc(100% + var(--vhn-gap) + 33px);
+  top: calc(100% + var(--vhn-gap) + 33px);
 }
 
 .vhn--bottom-right .vhn__label-position {
-  left: calc(100% + var(--vhn-gap) + 51px);
-  top: calc(100% + var(--vhn-gap) + 51px);
+  left: calc(100% + var(--vhn-gap) + 33px);
+  top: calc(100% + var(--vhn-gap) + 33px);
 }
 
 @media (prefers-reduced-motion: reduce) {
