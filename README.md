@@ -12,6 +12,12 @@ Vue Hand Note is an open-source project supported by [LearningMap.today](https:/
 
 Vue Hand Note 是由 [LearningMap.today](https://learningmap.today/) 支持的开源项目，致力于为 Vue 社区持续提供文档完善、经过测试且可自由使用的手写标注组件。
 
+## Live demo / 在线演示
+
+[Open the interactive GitHub Pages demo →](https://totorookay-maker.github.io/vue-hand-note/)
+
+[打开 GitHub Pages 在线交互演示 →](https://totorookay-maker.github.io/vue-hand-note/)
+
 ## Features
 
 - Vue 3 and TypeScript support
