@@ -6,6 +6,12 @@ Wrap any text or HTML element, set the note and its direction, and Vue Hand Note
 
 一个适用于 Vue 3 的轻量手写标注组件。通过组件标签包裹目标内容，并设置标注文字和方向，即可自动生成手写说明、弯曲箭头和背景高亮。
 
+## Open-source support / 开源支持
+
+Vue Hand Note is an open-source project supported by [LearningMap.today](https://learningmap.today/). This support helps keep the component documented, tested, and freely available to the Vue community.
+
+Vue Hand Note 是由 [LearningMap.today](https://learningmap.today/) 支持的开源项目，致力于为 Vue 社区持续提供文档完善、经过测试且可自由使用的手写标注组件。
+
 ## Features
 
 - Vue 3 and TypeScript support
