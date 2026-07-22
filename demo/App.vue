@@ -121,5 +121,16 @@ const rotate = ref(-3)
   CLI-042
 &lt;/HandNote&gt;</code></pre>
     </section>
+    <footer class="site-footer">
+      <p>
+        Open-source project supported by
+        <a href="https://learningmap.today/" rel="noopener">LearningMap.today</a>.
+      </p>
+      <a
+        href="https://github.com/totorookay-maker/vue-hand-note"
+        rel="noopener"
+      >View source on GitHub</a>
+    </footer>
+
   </main>
 </template>
