@@ -50,55 +50,23 @@ const presetColors: Record<string, string> = {
   purple: '#7c3aed',
 }
 
-const vectors: Record<LongDirection, { x: number; y: number }> = {
-  'top-left': { x: -0.707, y: -0.707 },
-  top: { x: 0, y: -1 },
-  'top-right': { x: 0.707, y: -0.707 },
-  left: { x: -1, y: 0 },
-  right: { x: 1, y: 0 },
-  'bottom-left': { x: -0.707, y: 0.707 },
-  bottom: { x: 0, y: 1 },
-  'bottom-right': { x: 0.707, y: 0.707 },
+const arrowAngles: Record<LongDirection, number> = {
+  left: 0,
+  'top-left': 45,
+  top: 90,
+  'top-right': 135,
+  right: 180,
+  'bottom-right': 225,
+  bottom: 270,
+  'bottom-left': 315,
 }
 
 const normalizedDirection = computed(() => directionAliases[props.direction])
 const resolvedColor = computed(() => presetColors[props.color] ?? props.color)
 
-const round = (value: number) => Math.round(value * 10) / 10
-
-const arrow = computed(() => {
-  const vector = vectors[normalizedDirection.value]
-  const perpendicular = { x: -vector.y, y: vector.x }
-  const start = { x: vector.x * 64, y: vector.y * 64 }
-  const end = { x: vector.x * 18, y: vector.y * 18 }
-  const control1 = {
-    x: vector.x * 50 + perpendicular.x * 13,
-    y: vector.y * 50 + perpendicular.y * 13,
-  }
-  const control2 = {
-    x: vector.x * 31 - perpendicular.x * 9,
-    y: vector.y * 31 - perpendicular.y * 9,
-  }
-
-  const backX = control2.x - end.x
-  const backY = control2.y - end.y
-  const length = Math.hypot(backX, backY) || 1
-  const back = { x: backX / length, y: backY / length }
-  const headPerpendicular = { x: -back.y, y: back.x }
-  const head1 = {
-    x: end.x + back.x * 9 + headPerpendicular.x * 4.5,
-    y: end.y + back.y * 9 + headPerpendicular.y * 4.5,
-  }
-  const head2 = {
-    x: end.x + back.x * 9 - headPerpendicular.x * 4.5,
-    y: end.y + back.y * 9 - headPerpendicular.y * 4.5,
-  }
-
-  return {
-    curve: `M ${round(start.x)} ${round(start.y)} C ${round(control1.x)} ${round(control1.y)}, ${round(control2.x)} ${round(control2.y)}, ${round(end.x)} ${round(end.y)}`,
-    head: `M ${round(head1.x)} ${round(head1.y)} L ${round(end.x)} ${round(end.y)} L ${round(head2.x)} ${round(head2.y)}`,
-  }
-})
+const arrowTransform = computed(
+  () => `rotate(${arrowAngles[normalizedDirection.value]} 88 48)`,
+)
 
 const rootStyle = computed(() => ({
   '--vhn-color': resolvedColor.value,
@@ -121,12 +89,25 @@ const rootStyle = computed(() => ({
 
     <svg
       class="vhn__arrow"
-      viewBox="-80 -80 160 160"
+      viewBox="0 0 96 96"
       aria-hidden="true"
       focusable="false"
     >
-      <path class="vhn__arrow-curve" :d="arrow.curve" />
-      <path class="vhn__arrow-head" :d="arrow.head" />
+      <g :transform="arrowTransform">
+        <path
+          class="vhn__arrow-ghost"
+          d="M 12 38 C 31 19 48 63 69 48 C 77 42 82 45 88 48"
+          transform="translate(0.7 0.6)"
+        />
+        <path
+          class="vhn__arrow-curve"
+          d="M 12 38 C 31 19 48 63 69 48 C 77 42 82 45 88 48"
+        />
+        <path
+          class="vhn__arrow-head"
+          d="M 81 39.5 L 88 48 L 77 47.5"
+        />
+      </g>
     </svg>
 
     <span class="vhn__label-position" aria-hidden="true">
