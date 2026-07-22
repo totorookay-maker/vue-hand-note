@@ -7,19 +7,19 @@ import type {
 } from '../src/types'
 
 const directions: Array<{ value: HandNoteDirection; label: string }> = [
-  { value: 'top-left', label: '左上' },
-  { value: 'top', label: '上' },
-  { value: 'top-right', label: '右上' },
-  { value: 'left', label: '左' },
-  { value: 'right', label: '右' },
-  { value: 'bottom-left', label: '左下' },
-  { value: 'bottom', label: '下' },
-  { value: 'bottom-right', label: '右下' },
+  { value: 'top-left', label: 'Top left' },
+  { value: 'top', label: 'Top' },
+  { value: 'top-right', label: 'Top right' },
+  { value: 'left', label: 'Left' },
+  { value: 'right', label: 'Right' },
+  { value: 'bottom-left', label: 'Bottom left' },
+  { value: 'bottom', label: 'Bottom' },
+  { value: 'bottom-right', label: 'Bottom right' },
 ]
 
 const colors: HandNoteColor[] = ['amber', 'blue', 'green', 'red', 'purple']
 
-const note = ref('稳定 ID')
+const note = ref('Stable ID')
 const direction = ref<HandNoteDirection>('top')
 const color = ref<HandNoteColor>('blue')
 const gap = ref(8)
@@ -29,27 +29,32 @@ const rotate = ref(-3)
 <template>
   <main class="page-shell">
     <header class="hero">
-      <p class="eyebrow">Vue 3 component library</p>
+      <p class="eyebrow">Open source · Vue 3</p>
       <h1>Vue Hand Note</h1>
       <p class="lead">
-        用一个组件标签，为任意内容添加手写文字、弯曲箭头和八方向说明标注。
+        Add precise handwritten notes and naturally curved arrows to any Vue 3 content.
       </p>
+      <div class="hero-links">
+        <a href="https://github.com/totorookay-maker/vue-hand-note">View on GitHub</a>
+        <span>8 directions</span>
+        <span>TypeScript</span>
+      </div>
     </header>
 
     <section class="playground" aria-labelledby="playground-title">
       <div class="controls">
         <div>
           <p class="section-kicker">Interactive playground</p>
-          <h2 id="playground-title">实时调整标注</h2>
+          <h2 id="playground-title">Tune the annotation</h2>
         </div>
 
         <label>
-          标注文字
+          Note text
           <input v-model="note" type="text" />
         </label>
 
         <label>
-          方向
+          Direction
           <select v-model="direction">
             <option v-for="item in directions" :key="item.value" :value="item.value">
               {{ item.label }} · {{ item.value }}
@@ -58,7 +63,7 @@ const rotate = ref(-3)
         </label>
 
         <label>
-          颜色
+          Color
           <select v-model="color">
             <option v-for="item in colors" :key="item" :value="item">
               {{ item }}
@@ -67,12 +72,12 @@ const rotate = ref(-3)
         </label>
 
         <label>
-          间距 {{ gap }}px
+          Gap · {{ gap }}px
           <input v-model.number="gap" type="range" min="0" max="24" />
         </label>
 
         <label>
-          倾斜 {{ rotate }}°
+          Rotation · {{ rotate }}°
           <input v-model.number="rotate" type="range" min="-12" max="12" />
         </label>
       </div>
@@ -96,15 +101,20 @@ const rotate = ref(-3)
 
     <section class="directions" aria-labelledby="directions-title">
       <p class="section-kicker">Eight directions</p>
-      <h2 id="directions-title">所有方向</h2>
+      <h2 id="directions-title">Aligned at every edge</h2>
       <div class="direction-grid">
-        <article v-for="(item, index) in directions" :key="item.value" class="direction-card">
+        <article
+          v-for="(item, index) in directions"
+          :key="item.value"
+          :class="['direction-card', `direction-card--${item.value}`]"
+        >
+          <span class="direction-name">{{ item.value }}</span>
           <HandNote
             :note="item.label"
             :direction="item.value"
             :color="colors[index % colors.length]"
           >
-            <span class="demo-target">{{ item.value }}</span>
+            <span class="demo-target">target</span>
           </HandNote>
         </article>
       </div>
@@ -112,15 +122,16 @@ const rotate = ref(-3)
 
     <section class="code-card">
       <p class="section-kicker">Minimal API</p>
-      <h2>三项属性即可使用</h2>
+      <h2>Three props. Nothing else.</h2>
       <pre><code>&lt;HandNote
-  note="稳定 ID"
+  note="Stable ID"
   direction="top"
   color="blue"
 &gt;
   CLI-042
 &lt;/HandNote&gt;</code></pre>
     </section>
+
     <footer class="site-footer">
       <p>
         Open-source project supported by
@@ -131,6 +142,5 @@ const rotate = ref(-3)
         rel="noopener"
       >View source on GitHub</a>
     </footer>
-
   </main>
 </template>
